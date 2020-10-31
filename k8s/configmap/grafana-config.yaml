@@ -1,0 +1,60 @@
+apiVersion: v1
+data:
+  grafana-dashboard-provider.yaml: |-
+    apiVersion: 1
+
+    providers:
+    - name: 'default'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: false
+      updateIntervalSeconds: 10 #how often Grafana will scan for changed dashboards
+      options:
+        path: /var/lib/grafana/dashboards
+  influxdb-datasource.yaml: |
+    # config file version
+    apiVersion: 1
+
+    # list of datasources to insert/update depending
+    # what's available in the database
+    datasources:
+      # <string, required> name of the datasource. Required
+    - name: influxdb
+      # <string, required> datasource type. Required
+      type: influxdb
+      # <string, required> access mode. proxy or direct (Server or Browser in the UI). Required
+      access: proxy
+      # <int> org id. will default to orgId 1 if not specified
+      orgId: 1
+      # <string> url
+      url: http://influxdb:8086
+      # <string> database password, if used
+      password: root
+      # <string> database user, if used
+      user: root
+      # <string> database name, if used
+      database: exofense
+      # version
+      version: 1
+      # <bool> allow users to edit datasources from the UI.
+      editable: false
+kind: ConfigMap
+metadata:
+  creationTimestamp: "2020-10-20T11:39:56Z"
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:data:
+        .: {}
+        f:grafana-dashboard-provider.yaml: {}
+        f:influxdb-datasource.yaml: {}
+    manager: kubectl-create
+    operation: Update
+    time: "2020-10-20T11:39:56Z"
+  name: grafana-config
+  namespace: default
+  resourceVersion: "23931"
+  selfLink: /api/v1/namespaces/default/configmaps/grafana-config
+  uid: e8fe6158-eed4-4388-8bef-e53845b6b960

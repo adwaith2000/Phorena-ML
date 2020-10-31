@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2020-10-20T09:44:17Z"
+  labels:
+    app: influxdb
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:labels:
+          .: {}
+          f:app: {}
+      f:spec:
+        f:ports:
+          .: {}
+          k:{"port":8086,"protocol":"TCP"}:
+            .: {}
+            f:port: {}
+            f:protocol: {}
+            f:targetPort: {}
+        f:selector:
+          .: {}
+          f:app: {}
+        f:sessionAffinity: {}
+        f:type: {}
+    manager: kubectl-expose
+    operation: Update
+    time: "2020-10-20T09:44:17Z"
+  name: influxdb
+  namespace: default
+  resourceVersion: "9095"
+  selfLink: /api/v1/namespaces/default/services/influxdb
+  uid: e109739c-9352-44aa-8255-d8c63fdecbe4
+spec:
+  clusterIP: 10.152.183.211
+  ports:
+  - port: 8086
+    protocol: TCP
+    targetPort: 8086
+  selector:
+    app: influxdb
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2020-10-20T12:21:32Z"
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:spec:
+        f:externalTrafficPolicy: {}
+        f:ports:
+          .: {}
+          k:{"port":8125,"protocol":"UDP"}:
+            .: {}
+            f:port: {}
+            f:protocol: {}
+            f:targetPort: {}
+        f:selector:
+          .: {}
+          f:app: {}
+        f:sessionAffinity: {}
+        f:type: {}
+    manager: kubectl-expose
+    operation: Update
+    time: "2020-10-20T12:21:32Z"
+  name: telegraf
+  namespace: default
+  resourceVersion: "29465"
+  selfLink: /api/v1/namespaces/default/services/telegraf
+  uid: 8527c255-3890-4947-aed3-09233923b9f9
+spec:
+  clusterIP: 10.152.183.252
+  externalTrafficPolicy: Cluster
+  ports:
+  - nodePort: 30546
+    port: 8125
+    protocol: UDP
+    targetPort: 8125
+  selector:
+    app: telegraf
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}

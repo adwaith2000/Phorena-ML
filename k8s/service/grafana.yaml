@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2020-10-20T11:52:32Z"
+  labels:
+    app: grafana
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:labels:
+          .: {}
+          f:app: {}
+      f:spec:
+        f:externalTrafficPolicy: {}
+        f:ports:
+          .: {}
+          k:{"port":80,"protocol":"TCP"}:
+            .: {}
+            f:port: {}
+            f:protocol: {}
+            f:targetPort: {}
+        f:selector:
+          .: {}
+          f:app: {}
+        f:sessionAffinity: {}
+        f:type: {}
+    manager: kubectl-expose
+    operation: Update
+    time: "2020-10-20T11:52:32Z"
+  name: grafana
+  namespace: default
+  resourceVersion: "25568"
+  selfLink: /api/v1/namespaces/default/services/grafana
+  uid: 51985b4f-b00d-4928-9422-bb0163675776
+spec:
+  clusterIP: 10.152.183.19
+  externalTrafficPolicy: Cluster
+  ports:
+  - nodePort: 32056
+    port: 80
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: grafana
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer: {}
