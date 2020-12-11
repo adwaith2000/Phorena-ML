@@ -7,6 +7,7 @@ The anomaly data was stored into the Influx database. And the data was depicted 
 
 Code
 
+```
 import requests
 import time
 import paho.mqtt.client as mqtt
@@ -47,3 +48,4 @@ name="main"
 
 if name=='main':
     main()
+```
