@@ -1,3 +1,10 @@
+## Using tsmoothie
+Documentation for [anomaly.py](../anomaly/anomaly.py)
+
+### Step 1: Importing the libraries
+We use celluloid library to generate the gif of our anomaly detection program,
+tqdm to show progress bar and tsmoothie to detect anomalies 
+```py
 import numpy as np
 import matplotlib.pyplot as plt
 from celluloid import Camera
@@ -6,19 +13,49 @@ from functools import partial
 from tqdm import tqdm
 from influxdb import InfluxDBClient
 import random
-from tsmoothie.smoother import *
 import pprint
+from tsmoothie.smoother import *
+```
 
-client = InfluxDBClient(host='10.152.183.211', port=8086, username='exofense', password='password')
+### Step 2: Fetching data from the database
+The following code fetches the temperature readings recorded in the
+InfluxDB
+```py
+client = InfluxDBClient(host='YOUR_HOST_NAME', port=8086, username='YOUR_USERNAME', password='YOUR_PASSWORD')
 client.switch_database('exofense')
 
 result = client.query('SELECT * FROM "exofense"."autogen"."temp_reading"')
 points = result.get_points()
-pprint.pprint(list(points)[:5])
+pprint.pprint(list(points)[:3])
+```
+The output will be like:
+```
+    [{'host': 'telegraf-794bc96857-h5bkt',
+  'sensor_name': None,
+  'time': '2020-11-13T14:25:19.492971Z',
+  'topic': 'temperature',
+  'value': 30.0},
+ {'host': 'telegraf-794bc96857-h5bkt',
+  'sensor_name': None,
+  'time': '2020-11-13T14:26:19.805314Z',
+  'topic': 'temperature',
+  'value': 30.0},
+ {'host': 'telegraf-794bc96857-h5bkt',
+  'sensor_name': None,
+  'time': '2020-11-13T14:27:20.574169Z',
+  'topic': 'temperature',
+  'value': 30.0}]
+```
 
+As we are only interested in the temperature readings we can append
+those readings to a list by
+```py
 data = []
 data.append(list(map(lambda pt: pt['value'], list(points))))
+```
 
+### Step 3: Introducing some anomaly
+```py
 total = 0
 
 for i in range(0, len(data[0])-5, 5):
@@ -26,7 +63,12 @@ for i in range(0, len(data[0])-5, 5):
         total += 1
         data[0].insert(i, random.randint(80, 90))
         print(i, data[0][i], data[0][i+1], data[0][i-1])
+```
+Here we generate random values and insert it to the data[0] array at multiples of 5.
 
+
+### Step 4: Utility function to plot the data
+```py
 def plot(
     ax,
     i,
@@ -64,14 +106,13 @@ def plot(
             c='red', 
             alpha=1.
         )
+```
+This function will be plot smoothened curve in color that we pass to the function (default is blue) with anomalies in red color and non anomalous data in black color
 
-
-### GENERATE DATA ###
-
-np.random.seed(42)
+### Step 5: Setting up parameters
+```py
 n_series, timesteps = 1, len(data[0])
 
-# data = np.array([[1]*200, [1]*200, [28 if i == 20 else 35 for i in range(200)]])
 data = np.array(data)
 
 plt.plot(data.T)
@@ -79,12 +120,7 @@ np.set_printoptions(False)
 
 false_positive, false_negative = 0, 0
 
-
-### SLIDING WINDOW PARAMETER ###
-
-window_len = 20
-
-### SIMULATE PROCESS REAL-TIME AND CREATE GIF ###
+window_len = 20 # Sliding window parameter
 
 fig = plt.figure(figsize=(18,10))
 camera = Camera(fig)
@@ -92,7 +128,12 @@ camera = Camera(fig)
 anomalies = []
 axes = [plt.subplot(n_series,1,ax+1) for ax in range(n_series)]
 series = defaultdict(partial(np.ndarray, shape=(n_series,1), dtype='float32'))
+```
 
+Here n_series is the number of series we are detecting anomaly on. Since we use only temperature_reading in this example we set that to 1.
+
+### Step 6: Detecting Anomalies
+```py
 
 for i in tqdm(range(timesteps+1), total=(timesteps+1)):
     
@@ -119,7 +160,6 @@ for i in tqdm(range(timesteps+1), total=(timesteps+1)):
             anomalies.append(i)
             if(i % 5 != 1):
                 false_negative += 1
-                print(f'False neagtive: {i} {data[0][i]} {data[0][i-1]}')
 
         elif(i % 5 == 1 and abs(data[0][i]-data[0][i-1]) > 5):
             print(data[0][i])
@@ -136,8 +176,12 @@ for i in tqdm(range(timesteps+1), total=(timesteps+1)):
         continue
     
     series['original'] = np.hstack([series['original'], data[:,[i]]])
+```
 
-print(list(enumerate(data[0])))
+We use tsmoothie's ConvolutionSmoother to smooth the data and get an low and up value for each data point. If the data point lies between this up and low it is not labelled as anomaly. We use numpy hstack to stack multiple series into a single object and perform vectorised operations on it.
+
+### Step 7: Printing results
+```py
 print(anomalies)
 print(false_positive, total)
 print(false_positive/total)
@@ -149,3 +193,5 @@ animation = camera.animate()
 animation.save('animation1.gif')
 plt.close(fig)
 print('DONE')
+```
+![](../animation1.gif)
