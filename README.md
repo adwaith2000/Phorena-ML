@@ -4,6 +4,7 @@
 ```
 sudo snap install microk8s --classic --channel=1.18/edge
 ```
+
 If already installed remove it by running
 ```
 microk8s.reset
