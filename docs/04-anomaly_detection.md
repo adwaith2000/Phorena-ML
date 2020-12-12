@@ -1,4 +1,4 @@
-## Using tsmoothie
+## Using tsmoothie ( alternate method is by using Z score Method)
 Documentation for [anomaly.py](../anomaly/anomaly.py)
 
 ### Step 1: Importing the libraries
@@ -66,6 +66,7 @@ for i in range(0, len(data[0])-5, 5):
 ```
 Here we generate random values and insert it to the data[0] array at multiples of 5.
 
+### Step 4-7 is anomaly detection using tsmoothie. Jump to step 8 for z-score method
 
 ### Step 4: Utility function to plot the data
 ```py
@@ -195,3 +196,23 @@ plt.close(fig)
 print('DONE')
 ```
 ![](../animation1.gif)
+
+### Step 8   detecting anomaly using z score
+
+Z-score is a parametric measure and it takes two parameters — mean and standard deviation. Once you calculate these two parameters, finding the Z-score of a data point is easy. 
+z-score= (value - mean)/standard deviation
+
+```py
+
+
+mean = client.query('SELECT MEAN(value) FROM cpu_reading').raw['series'][0]['values'][0][1]
+stddev = client.query('SELECT STDDEV(value) FROM cpu_reading').raw['series'][0]['values'][0][1]
+
+print("Rows with anomaly")
+for row in client.query("SELECT * FROM cpu_reading").raw['series'][0]['values']:
+    value = row[4]
+    print((value-mean)/stddev)
+    if((value-mean)/stddev > 0.5 or (value-mean)/stddev < -0.5):
+        print(row)
+```
+The rows with anomalies will be printed here.
