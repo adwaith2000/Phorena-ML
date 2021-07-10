@@ -15,7 +15,7 @@ class TempHumiditySensor(Sensor):
 
         try:
             self.client = paho.Client(self.sensor_name)
-            self.client.connect(self.BROKER, self.PORT)
+            self.client.connect("10.152.183.119", 1883)
             print(f"{self.sensor_name}: Established connection")
         
         except Exception as e:
@@ -38,7 +38,7 @@ class TempHumiditySensor(Sensor):
                 "sensor_name": self.sensor_name,
                 "value": value[0]
             }))
-            self.client.publish(self.topic_name, json.dumps({
+            print(json.dumps({
                 "name": "humidity_reading",
                 "sensor_name": self.sensor_name,
                 "value": value[1]

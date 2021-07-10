@@ -6,6 +6,7 @@
 5. Docker
 6. Kubernetes
 7. Calico
+8. Svelte
 
 ## Mosquitto
 MQTT is a publish-subscriber network protocol that transports
@@ -56,3 +57,7 @@ In Kubernetes, there are multiple servers and pods inside each server. A pod is 
 ## Calico
 Calico is an open source networking and network security solution for containers, virtual machines, and native host-based workloads. Calico supports a broad range of platforms including Kubernetes, OpenShift, Docker EE, OpenStack, and bare metal services.
 Calico network policy engine formed the original reference implementation of Kubernetes network policy during the development of the API. By using multiple enforcement points Calico policies can provide a run-anywhere solution to implement a zero trust network for your Kubernetes cluster.
+
+## Svelte
+Svelte is an Javascript front end framework used to create
+pre compiled pure Javascript while maintaining reactivity.  Svelte doesn't use a virtual DOM. It will compile your code down to vanilla JavaScript at build time. The actual DOM is updated whenever state change occurs.
